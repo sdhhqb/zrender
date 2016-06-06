@@ -3,6 +3,10 @@ ZRender
 
 A lightweight canvas library which providing 2d draw for [ECharts](https://github.com/ecomfe/echarts)
 
+## 自定义修改
+
+查看custom.md文件
+
 ## License
 Copyright (c) 2013, Baidu Inc.
 All rights reserved.
