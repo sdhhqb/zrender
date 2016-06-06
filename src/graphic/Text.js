@@ -76,10 +76,38 @@ define(function (require) {
                 var lineHeight = textContain.measureText('国', ctx.font).width;
 
                 var textLines = text.split('\n');
+
+                // 每一行可以单独设置字体大小
+                // 字体是否改变标志
+                var fontChged = false;
+                // 原始字体
+                var oriFont = ctx.font;
+                // 原始行高
+                var oriLineHeight = lineHeight;
+
                 for (var i = 0; i < textLines.length; i++) {
-                    textFill && ctx.fillText(textLines[i], x, y);
-                    textStroke && ctx.strokeText(textLines[i], x, y);
-                    y += lineHeight;
+                    // 设置了自定义字体的行
+                    var customLine = textLines[i].match(/\[xfont(\d+)$/);
+                    if (customLine) {
+                        ctx.font = customLine[1] + "px Microsoft YaHei";
+                        lineHeight = textContain.measureText('国', ctx.font).width;
+                        y = y - (lineHeight - oriLineHeight);
+                        // 剔除掉末尾[xfont..特殊参数的原始字符串
+                        var oriText = textLines[i].replace(/\[xfont(\d+)$/, '');
+                        textFill && ctx.fillText(oriText, x, y);
+                        textStroke && ctx.strokeText(oriText, x, y);
+                        y += lineHeight;
+                        fontChged = true;
+                    } else {
+                        textFill && ctx.fillText(textLines[i], x, y);
+                        textStroke && ctx.strokeText(textLines[i], x, y);
+                        y += lineHeight;
+                    }
+                    if (fontChged) {
+                        ctx.font = oriFont;
+                        lineHeight = oriLineHeight;
+                        fontChged = false;
+                    }
                 }
 
                 ctx.restore();
